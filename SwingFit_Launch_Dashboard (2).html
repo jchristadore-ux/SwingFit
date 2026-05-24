@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swing Fit — Launch Dashboard</title>
+<style>
+:root{--dg:#1A3A1A;--mg:#2E6B2E;--bg2:#4A9E4A;--gold:#C9A84C;--gold-l:#FFF8E7;--warm:#FDFCF9;--g1:#2C2C2A;--g2:#5F5E5A;--g3:#88877F;--g4:#E8E6E0;--blue:#1A3B6E;--blue-l:#E8F0FF;--red:#8B1A1A;--red-l:#FDEAEA;--amber:#7A4A00;--amber-l:#FFF3CC;--purple:#3A1A6E;--purple-l:#F0EEFF;--bg:#F2F0EA;--card:#FFFFFF;--r:10px;--sh:0 2px 12px rgba(0,0,0,0.07);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--g1);font-size:15px;line-height:1.7;}
+.shell{display:grid;grid-template-columns:265px 1fr;min-height:100vh;}
+.sidebar{background:var(--dg);position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.main{padding:2rem 2.5rem 4rem;max-width:960px;}
+.sb-brand{padding:1.3rem 1.2rem 0.9rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sb-brand h1{font-family:sans-serif;font-size:17px;font-weight:700;color:#fff;}
+.sb-brand p{font-size:11px;color:rgba(255,255,255,0.38);margin-top:2px;font-family:sans-serif;}
+.sb-prog{padding:0.9rem 1.2rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sb-prog-lbl{font-size:11px;color:rgba(255,255,255,0.45);font-family:sans-serif;margin-bottom:5px;display:flex;justify-content:space-between;}
+.pt{height:4px;background:rgba(255,255,255,0.1);border-radius:2px;}
+.pf{height:100%;background:var(--bg2);border-radius:2px;transition:width 0.4s;width:0%;}
+.ng{padding:0.35rem 0;}
+.nl{font-size:10px;font-family:sans-serif;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,0.28);padding:0.45rem 1.2rem 0.2rem;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:8px;padding:0.4rem 1.2rem;cursor:pointer;border-left:2px solid transparent;transition:all 0.15s;font-family:sans-serif;font-size:12.5px;color:rgba(255,255,255,0.6);text-decoration:none;}
+.ni:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.ni.active{background:rgba(74,158,74,0.18);border-left-color:var(--bg2);color:#fff;}
+.nc{width:16px;height:16px;border:1px solid rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:all 0.2s;}
+.nc.ok{background:var(--bg2);border-color:var(--bg2);color:#fff;}
+.nb{font-size:9px;background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;margin-left:auto;color:rgba(255,255,255,0.35);font-family:sans-serif;}
+.nn{font-size:9px;background:var(--gold);color:#fff;padding:1px 6px;border-radius:3px;margin-left:auto;font-family:sans-serif;font-weight:700;}
+.section{display:none;}.section.active{display:block;}
+.ph{margin-bottom:1.6rem;padding-bottom:1.2rem;border-bottom:2px solid var(--g4);}
+.ph-tag{font-size:11px;font-family:sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--bg2);margin-bottom:5px;}
+.ph-title{font-size:27px;font-weight:700;color:var(--dg);line-height:1.2;margin-bottom:6px;}
+.ph-sub{font-size:14px;color:var(--g2);font-family:sans-serif;line-height:1.6;}
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--g4);padding:1.3rem 1.6rem;margin-bottom:1.1rem;box-shadow:var(--sh);}
+.ct{font-size:16px;font-weight:700;color:var(--dg);margin-bottom:0.35rem;font-family:sans-serif;}
+.cs{font-size:13px;color:var(--g2);font-family:sans-serif;margin-bottom:0.9rem;line-height:1.5;}
+.sl{list-style:none;display:flex;flex-direction:column;gap:0.85rem;}
+.si{display:flex;gap:13px;align-items:flex-start;padding:0.95rem 1.1rem;border-radius:8px;border:1px solid var(--g4);background:var(--warm);transition:background 0.2s;}
+.si.done2{background:#F0FFF0;border-color:#C0DDB0;}
+.si.done2 .sb2{opacity:0.55;}
+.snw{flex-shrink:0;padding-top:2px;}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--dg);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:sans-serif;cursor:pointer;transition:all 0.2s;user-select:none;}
+.sn:hover{background:var(--bg2);transform:scale(1.05);}
+.sn.ck{background:var(--bg2);}
+.sb2{flex:1;}
+.stitle{font-family:sans-serif;font-size:14px;font-weight:700;color:var(--g1);margin-bottom:3px;}
+.sdesc{font-family:sans-serif;font-size:13px;color:var(--g2);line-height:1.6;}
+.sdet{font-family:sans-serif;font-size:12.5px;color:var(--g2);line-height:1.65;margin-top:8px;padding:10px 12px;background:var(--bg);border-radius:6px;border-left:3px solid var(--bg2);display:none;}
+.si.exp .sdet{display:block;}
+.stime{font-size:11px;font-family:sans-serif;color:var(--g3);margin-top:3px;}
+.expbtn{font-size:11px;font-family:sans-serif;color:var(--bg2);cursor:pointer;background:none;border:none;padding:0;font-weight:700;margin-top:4px;text-decoration:underline;}
+.dh{display:flex;align-items:center;gap:14px;margin-bottom:1.3rem;padding:1.1rem 1.4rem;background:var(--dg);border-radius:var(--r);color:#fff;}
+.dnb{font-size:36px;font-weight:700;color:var(--bg2);line-height:1;font-family:sans-serif;min-width:42px;}
+.di h2{font-size:17px;font-weight:700;font-family:sans-serif;color:#fff;}
+.di p{font-size:13px;color:rgba(255,255,255,0.55);font-family:sans-serif;margin-top:2px;}
+.dt{font-size:11px;background:rgba(255,255,255,0.1);padding:3px 10px;border-radius:4px;display:inline-block;margin-top:5px;color:rgba(255,255,255,0.62);}
+.ib{border-radius:8px;padding:0.85rem 1rem;margin:0.75rem 0;font-family:sans-serif;font-size:13px;line-height:1.6;}
+.ib.tip{background:#E8F4E8;border-left:3px solid var(--bg2);color:var(--mg);}
+.ib.warn{background:var(--amber-l);border-left:3px solid var(--gold);color:var(--amber);}
+.ib.note{background:var(--blue-l);border-left:3px solid var(--blue);color:var(--blue);}
+.ib.danger{background:var(--red-l);border-left:3px solid var(--red);color:var(--red);}
+.ib.new{background:var(--purple-l);border-left:3px solid var(--purple);color:var(--purple);}
+.ib strong{font-weight:700;}
+.cb{background:var(--bg);border:1px solid var(--g4);border-radius:8px;padding:1rem 1.2rem;margin-top:10px;position:relative;}
+.cb pre{font-family:'Courier New',monospace;font-size:12.5px;color:var(--g1);white-space:pre-wrap;word-break:break-word;line-height:1.7;}
+.cpbtn{position:absolute;top:9px;right:9px;background:var(--dg);color:#fff;border:none;padding:4px 11px;border-radius:5px;font-size:11px;font-family:sans-serif;cursor:pointer;font-weight:600;}
+.cpbtn:hover,.cpbtn.copied{background:var(--bg2);}
+.sr{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.3rem;}
+.sc{background:var(--card);border:1px solid var(--g4);border-radius:8px;padding:0.9rem 1rem;text-align:center;}
+.snum{font-size:24px;font-weight:700;color:var(--bg2);font-family:sans-serif;line-height:1;}
+.slbl{font-size:11px;color:var(--g2);font-family:sans-serif;margin-top:3px;}
+.tb{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:0.9rem;}
+.tbbtn{font-family:sans-serif;font-size:12px;padding:5px 13px;border-radius:20px;border:1px solid var(--g4);background:var(--warm);color:var(--g2);cursor:pointer;transition:all 0.15s;font-weight:600;}
+.tbbtn.active{background:var(--dg);color:#fff;border-color:var(--dg);}
+.tbp{display:none;}.tbp.active{display:block;}
+.cc2{background:var(--card);border:1px solid var(--g4);border-radius:var(--r);padding:1.2rem 1.4rem;margin-bottom:0.9rem;}
+.cch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px;}
+.ccid{font-size:10px;font-family:sans-serif;font-weight:700;color:var(--bg2);letter-spacing:1px;}
+.ccfmt{font-size:11px;font-family:sans-serif;color:var(--g3);}
+.cchook{font-family:sans-serif;font-size:14px;font-weight:700;color:var(--dg);margin-bottom:7px;line-height:1.4;}
+.ecard{background:var(--card);border:1px solid var(--g4);border-radius:var(--r);margin-bottom:1.1rem;overflow:hidden;}
+.ehead{background:var(--dg);padding:0.85rem 1.3rem;display:flex;justify-content:space-between;align-items:center;}
+.enum{font-size:11px;font-family:sans-serif;font-weight:700;color:rgba(255,255,255,0.48);}
+.etiming{font-size:11px;font-family:sans-serif;color:rgba(255,255,255,0.48);}
+.ebody{padding:1.1rem 1.3rem;}
+.esubj{font-family:sans-serif;font-size:13px;font-weight:700;color:var(--dg);margin-bottom:2px;}
+.eprev{font-family:sans-serif;font-size:12px;color:var(--g3);margin-bottom:10px;}
+/* TRACKER */
+.tgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:1.1rem;}
+.tcol{display:flex;flex-direction:column;gap:5px;}
+.tdlbl{font-size:10px;font-family:sans-serif;font-weight:700;color:var(--g3);text-align:center;text-transform:uppercase;letter-spacing:0.5px;padding-bottom:4px;border-bottom:1px solid var(--g4);}
+.slot{min-height:68px;border-radius:7px;border:1.5px dashed var(--g4);background:var(--warm);cursor:pointer;padding:5px 6px;transition:all 0.15s;position:relative;}
+.slot:hover{border-color:var(--bg2);background:#F0FFF0;}
+.slot.posted{border-style:solid;border-color:#C0DDB0;background:#F0FFF0;}
+.slot.scheduled{border-color:var(--gold);background:var(--gold-l);}
+.slot.draft{border-color:var(--g4);}
+.slot-id{font-size:10px;font-weight:700;font-family:sans-serif;color:var(--mg);}
+.slot-title{font-size:10px;font-family:sans-serif;color:var(--g2);line-height:1.3;margin-top:2px;}
+.slot-st{font-size:9px;font-family:sans-serif;font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.slot-st.posted{color:var(--bg2);}
+.slot-st.scheduled{color:var(--amber);}
+.slot-st.draft{color:var(--g3);}
+.slot-del{position:absolute;top:3px;right:4px;font-size:12px;cursor:pointer;color:var(--g3);background:none;border:none;padding:0;line-height:1;}
+.slot-del:hover{color:var(--red);}
+.addbtn{min-height:42px;border-radius:7px;border:1.5px dashed var(--g4);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--g4);transition:all 0.15s;width:100%;}
+.addbtn:hover{border-color:var(--bg2);color:var(--bg2);}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:0.9rem;}
+.li2{display:flex;align-items:center;gap:5px;font-size:11px;font-family:sans-serif;color:var(--g2);}
+.ld{width:10px;height:10px;border-radius:2px;}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.42);z-index:1000;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mbox{background:var(--card);border-radius:var(--r);padding:1.4rem 1.6rem;width:350px;max-width:95vw;box-shadow:0 8px 40px rgba(0,0,0,0.16);}
+.mbox h3{font-family:sans-serif;font-size:15px;font-weight:700;color:var(--dg);margin-bottom:0.9rem;}
+.mbox label{font-family:sans-serif;font-size:12px;font-weight:700;color:var(--g2);display:block;margin-bottom:2px;margin-top:9px;}
+.mbox input,.mbox select,.mbox textarea{width:100%;font-family:sans-serif;font-size:13px;padding:6px 9px;border:1px solid var(--g4);border-radius:6px;background:var(--warm);color:var(--g1);}
+.mbox textarea{resize:vertical;min-height:55px;}
+.mbtns{display:flex;gap:7px;margin-top:1.1rem;}
+.bp{background:var(--dg);color:#fff;border:none;padding:7px 16px;border-radius:6px;font-family:sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.bp:hover{background:var(--bg2);}
+.bs{background:none;color:var(--g2);border:1px solid var(--g4);padding:7px 16px;border-radius:6px;font-family:sans-serif;font-size:13px;cursor:pointer;}
+/* ROUTINE */
+.rc2{background:var(--card);border:2px solid var(--bg2);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:1.1rem;}
+.rc2 h3{font-family:sans-serif;font-size:15px;font-weight:700;color:var(--dg);margin-bottom:0.75rem;}
+.rd{display:flex;gap:12px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--g4);}
+.rd:last-child{border-bottom:none;}
+.rdl{font-family:sans-serif;font-size:12px;font-weight:700;color:var(--bg2);min-width:78px;flex-shrink:0;}
+.rdt{font-family:sans-serif;font-size:12.5px;color:var(--g2);line-height:1.6;}
+.sun-hdr{background:var(--dg);border-radius:var(--r);padding:1rem 1.3rem;margin-bottom:0.9rem;display:flex;align-items:center;gap:12px;}
+.sun-hdr h3{font-family:sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
+.sun-hdr p{font-family:sans-serif;font-size:12px;color:rgba(255,255,255,0.55);}
+.wknav{display:flex;align-items:center;gap:10px;margin-bottom:0.9rem;}
+.wknav button{font-family:sans-serif;font-size:13px;padding:5px 13px;border:1px solid var(--g4);border-radius:6px;background:var(--warm);color:var(--g2);cursor:pointer;}
+hr.div{border:none;border-top:1px solid var(--g4);margin:1.3rem 0;}
+.tsm{font-size:13px;font-family:sans-serif;line-height:1.6;color:var(--g2);}
+.mt1{margin-top:0.5rem;}.mt2{margin-top:1rem;}.mt3{margin-top:1.4rem;}
+b,strong{font-weight:700;}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sb-brand"><h1>⛳ SWING FIT</h1><p>Zero to Revenue Launch System</p></div>
+  <div class="sb-prog">
+    <div class="sb-prog-lbl"><span>Overall progress</span><span id="pct-lbl">0%</span></div>
+    <div class="pt"><div class="pf" id="prog-fill"></div></div>
+  </div>
+  <div class="ng">
+    <div class="nl">Overview</div>
+    <a class="ni active" onclick="go('overview')"><span class="nc" id="nc-overview"></span>Launch Overview</a>
+    <a class="ni" onclick="go('files')"><span class="nc" id="nc-files"></span>Your Files</a>
+  </div>
+  <div class="ng">
+    <div class="nl">7-Day Sprint</div>
+    <a class="ni" onclick="go('day1')"><span class="nc" id="nc-day1"></span>Day 1 — Setup<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day2')"><span class="nc" id="nc-day2"></span>Day 2 — Content<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day3')"><span class="nc" id="nc-day3"></span>Day 3 — Traffic<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day4')"><span class="nc" id="nc-day4"></span>Day 4 — Email Funnel<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day5')"><span class="nc" id="nc-day5"></span>Day 5 — Go Live<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day6')"><span class="nc" id="nc-day6"></span>Day 6 — Traffic Boost<span class="nb">~2hr</span></a>
+    <a class="ni" onclick="go('day7')"><span class="nc" id="nc-day7"></span>Day 7 — Review<span class="nb">~1hr</span></a>
+  </div>
+  <div class="ng">
+    <div class="nl">Ongoing System</div>
+    <a class="ni" onclick="go('weekly')"><span class="nc" id="nc-weekly"></span>Weekly Routine<span class="nn">NEW</span></a>
+    <a class="ni" onclick="go('tracker')"><span class="nc" id="nc-tracker"></span>Post Tracker<span class="nn">NEW</span></a>
+  </div>
+  <div class="ng">
+    <div class="nl">Content Assets</div>
+    <a class="ni" onclick="go('social')"><span class="nc" id="nc-social"></span>30 Social Posts</a>
+    <a class="ni" onclick="go('emails')"><span class="nc" id="nc-emails"></span>5 Email Templates</a>
+    <a class="ni" onclick="go('gumroad')"><span class="nc" id="nc-gumroad"></span>Gumroad Copy</a>
+    <a class="ni" onclick="go('bios')"><span class="nc" id="nc-bios"></span>Bios &amp; Linktree</a>
+    <a class="ni" onclick="go('reddit')"><span class="nc" id="nc-reddit"></span>Reddit Posts</a>
+  </div>
+</aside>
+<main class="main">
+
+<!-- OVERVIEW -->
+<section class="section active" id="s-overview">
+  <div class="ph"><div class="ph-tag">Start Here</div><div class="ph-title">Your Zero to Revenue Launch System</div><div class="ph-sub">Everything is built. Check off each step as you complete it. Progress saves automatically in your browser.</div></div>
+  <div class="sr">
+    <div class="sc"><div class="snum">7</div><div class="slbl">Days to launch</div></div>
+    <div class="sc"><div class="snum">$37</div><div class="slbl">Product price</div></div>
+    <div class="sc"><div class="snum" id="posts-stat">0</div><div class="slbl">Posts tracked</div></div>
+    <div class="sc"><div class="snum" id="steps-stat">0%</div><div class="slbl">Steps done</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">How the money flows</div>
+    <div class="cb" style="background:#F0FFF8;border-color:#C0DDB0;"><pre style="font-family:sans-serif;font-size:13px;line-height:2.1;">Post on Instagram / TikTok / Reddit
+  --> Visitor clicks free guide link in bio
+  --> They enter email on Beehiiv page
+  --> Email #1 auto-delivers the free PDF
+  --> Email #3 (Day 7) pitches Swing Fit for $37
+  --> They buy on Gumroad
+  --> Gumroad deposits to your bank account</pre></div>
+    <div class="ib tip mt2"><strong>Steps 3-7 happen automatically once set up.</strong> Your only ongoing job is posting content that sends people to step 1.</div>
+  </div>
+  <div class="card">
+    <div class="ct">What has been built for you</div>
+    <ul class="sl">
+      <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">Swing Fit 8-Week Program PDF -- your $37 product</div><div class="sdesc">26-page professional PDF. Ready to upload to Gumroad on Day 5.</div></div></li>
+      <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">5 Drills Free Guide PDF -- your lead magnet</div><div class="sdesc">Give away free for email addresses. Upload to Beehiiv on Day 4.</div></div></li>
+      <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">30 social captions written and ready</div><div class="sdesc">In the Social Posts section. Copy, paste, post.</div></div></li>
+      <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">5-email welcome sequence written and ready</div><div class="sdesc">In Email Templates. Paste into Beehiiv automation on Day 4.</div></div></li>
+      <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">Gumroad copy, bios, Linktree, Reddit posts written</div><div class="sdesc">All in their sections. Copy and paste.</div></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- FILES -->
+<section class="section" id="s-files">
+  <div class="ph"><div class="ph-tag">Downloads</div><div class="ph-title">Your Files</div><div class="ph-sub">Two PDFs ready. Save both to a folder called SwingFit Business on your computer.</div></div>
+  <div class="card"><div class="ct">SwingFit_8Week_Program.pdf</div><div class="cs">Your $37 product. Upload to Gumroad on Day 5.</div><div class="ib note">26 pages -- complete 8-week program -- all exercises with coaching cues -- nutrition guide -- warm-up -- modifications guide</div></div>
+  <div class="card"><div class="ct">SwingFit_5Drills_FreeGuide.pdf</div><div class="cs">Your lead magnet. Upload to Beehiiv on Day 4.</div><div class="ib note">Professional cover -- all 5 drills fully written -- coaching cues -- CTA pointing to full program</div></div>
+</section>
+
+<!-- DAY 1 -->
+<section class="section" id="s-day1">
+  <div class="dh"><div class="dnb">1</div><div class="di"><h2>Infrastructure Setup</h2><p>Accounts first. No posting today.</p><span class="dt">1.5-2 hours</span></div></div>
+  <div class="ib note" style="margin-bottom:1rem;"><strong>Why accounts before content?</strong> Post before your opt-in page and Gumroad exist, and traffic disappears with nowhere to go.</div>
+  <ul class="sl">
+    <li class="si" id="step-d1-amazon"><div class="snw"><div class="sn" id="sn-d1-amazon" onclick="tog('d1-amazon')">1</div></div><div class="sb2"><div class="stitle">Create Amazon Associates account</div><div class="sdesc">Earn 3-8% on golf gear. Free to join.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d1-amazon')">Show steps</button><div class="sdet" id="det-d1-amazon">1. Go to associates.amazon.com. Click Sign up.<br>2. Use existing Amazon account or create one.<br>3. Website field: enter instagram.com/SwingFitPro<br>4. Fill in name, address, phone. Verify.<br>5. Search: golf resistance bands, golf swing trainer, putting mat, foam roller<br>6. For top results (4+ stars, 500+ reviews): click Get link. Copy and save each link.<br><br><div class="ib tip">Need 3 sales within 180 days. Don't worry about this yet -- focus on traffic first.</div></div></div></li>
+    <li class="si" id="step-d1-gumroad"><div class="snw"><div class="sn" id="sn-d1-gumroad" onclick="tog('d1-gumroad')">2</div></div><div class="sb2"><div class="stitle">Create Gumroad account + upload product</div><div class="sdesc">Where customers pay you. Handles checkout and PDF delivery automatically.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d1-gumroad')">Show steps</button><div class="sdet" id="det-d1-gumroad">1. Go to gumroad.com. Click Start selling.<br>2. New product > Digital product<br>3. Name: Swing Fit: 8-Week Golf Fitness Program<br>4. Price: $37.00<br>5. Upload: SwingFit_8Week_Program.pdf<br>6. Leave as DRAFT. Do not publish yet. Day 5 is launch day.<br>7. Settings > Payments. Connect your bank account.<br><br><div class="ib warn">Do not publish yet. We go live on Day 5.</div></div></div></li>
+    <li class="si" id="step-d1-beehiiv"><div class="snw"><div class="sn" id="sn-d1-beehiiv" onclick="tog('d1-beehiiv')">3</div></div><div class="sb2"><div class="stitle">Create Beehiiv account + subscribe page</div><div class="sdesc">Your email list. The subscribe page captures visitors as leads.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d1-beehiiv')">Show steps</button><div class="sdet" id="det-d1-beehiiv">1. Go to beehiiv.com > Get started free<br>2. Name publication: Swing Fit<br>3. Sidebar: Website > Builder<br>4. Setup wizard: select Link in bio<br>5. Click through template/color screens quickly<br>6. In builder, click the subscribe form. Set:<br>   - Headline: Get Your Free Golf Fitness Guide<br>   - Subheading: 5 Drills to Add 15 Yards in 2 Weeks -- Free Download<br>   - Button: Send Me the Free Guide<br>7. Delete Newsletter, Upgrade, Archive, Recommendations buttons<br>8. Click Publish (top right)<br>9. Click Copy URL at top center. Save this link everywhere.</div></div></li>
+    <li class="si done2" id="step-d1-bh-done"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">Subscribe page live -- COMPLETE</div><div class="sdesc">Headline, subheading, Send Me the Free Guide button -- all confirmed.</div></div></li>
+    <li class="si" id="step-d1-ig"><div class="snw"><div class="sn" id="sn-d1-ig" onclick="tog('d1-ig')">4</div></div><div class="sb2"><div class="stitle">Create Instagram + TikTok accounts</div><div class="sdesc">Your social channels. All content is pre-written.</div><div class="stime">~25 min</div><button class="expbtn" onclick="exp('d1-ig')">Show steps</button><div class="sdet" id="det-d1-ig">Instagram:<br>1. Username: SwingFitPro<br>2. Name: Swing Fit<br>3. Bio line 1: Golf fitness for weekend warriors<br>   Bio line 2: Add 20 yds -- Play pain-free -- No gym<br>   Bio line 3: Free 5-drill guide<br>4. Website: your Beehiiv subscribe URL<br><br>TikTok:<br>1. Username: SwingFitPro<br>2. Bio: Golf fitness for real golfers | Free guide in link | No gym. Just more distance.<br>3. Add Beehiiv link<br><br>Profile photo: In Canva, make a dark green circle with SF in white. Use on both.</div></div></li>
+    <li class="si" id="step-d1-linktree"><div class="snw"><div class="sn" id="sn-d1-linktree" onclick="tog('d1-linktree')">5</div></div><div class="sb2"><div class="stitle">Create Linktree</div><div class="sdesc">One link in bio pointing to everything. Freebie goes first.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d1-linktree')">Show steps</button><div class="sdet" id="det-d1-linktree">1. linktr.ee > sign up free. Username: SwingFitPro<br>2. Add links in this order:<br>   Link 1: FREE: 5 Drills to Add 15 Yards > [Beehiiv URL]<br>   Link 2: Swing Fit 8-Week Program -- $37 > [Gumroad URL]<br>   Link 3: Golf Fitness Gear I Recommend > [Amazon links]<br>3. Update Instagram and TikTok bio website to Linktree URL<br><br><div class="ib tip">Freebie MUST be first. Most visitors won't buy $37 cold but will give an email for free PDF.</div></div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: Amazon Associates applied, Gumroad with PDF uploaded (draft), Beehiiv subscribe page live, Instagram + TikTok created with bios, Linktree built and linked.</div>
+</section>
+
+<!-- DAY 2 -->
+<section class="section" id="s-day2">
+  <div class="dh"><div class="dnb">2</div><div class="di"><h2>Canva Template + First Post</h2><p>Build template. Post IC01. Schedule IC02.</p><span class="dt">1.5-2 hours</span></div></div>
+  <div class="ib new" style="margin-bottom:1rem;"><strong>Updated -- your actual progress:</strong> Canva template built, IC01 posted and pinned, IC02 scheduled via Meta Business Suite for tomorrow. You are ahead of schedule.</div>
+  <ul class="sl">
+    <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">Canva carousel template created -- DONE</div><div class="sdesc">Dark green cover slide + white content slides. Slide numbers in green. SwingFit watermark bottom right.</div></div></li>
+    <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">IC01 posted and pinned to Instagram -- DONE</div><div class="sdesc">3 Stretches That Add Distance For Desk Golfers -- 6 slides, posted and pinned.</div></div></li>
+    <li class="si done2"><div class="snw"><div style="width:26px;height:26px;border-radius:50%;background:var(--bg2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;">&#10003;</div></div><div class="sb2"><div class="stitle">IC02 scheduled via Meta Business Suite -- DONE</div><div class="sdesc">The Real Reason You're Losing Distance -- scheduled for tomorrow. Posts automatically.</div></div></li>
+    <li class="si" id="step-d2-bank"><div class="snw"><div class="sn" id="sn-d2-bank" onclick="tog('d2-bank')">4</div></div><div class="sb2"><div class="stitle">Save all 30 captions to a Google Doc</div><div class="sdesc">Your content bank. Label each by ID. Mark posted/not posted as you go.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d2-bank')">Show steps</button><div class="sdet" id="det-d2-bank">1. Open Google Docs (docs.google.com)<br>2. New doc: Swing Fit -- Social Content Bank<br>3. Go to Social Posts section in this dashboard<br>4. Copy each post (IC01 through SC20) into the doc, labeled with the post ID<br>5. Mark each: Not posted. When you post it, write the date next to it.<br><br><div class="ib tip">Pre-written captions = 5 minutes to post instead of 45. This is what keeps you consistent.</div></div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: Template built, IC01 posted and pinned, IC02 scheduled, all captions saved in content bank doc.</div>
+</section>
+
+<!-- DAY 3 -->
+<section class="section" id="s-day3">
+  <div class="dh"><div class="dnb">3</div><div class="di"><h2>Affiliate Links + First Reel</h2><p>Get affiliate links live. Record first video. Manual outreach.</p><span class="dt">1.5-2 hours</span></div></div>
+  <ul class="sl">
+    <li class="si" id="step-d3-aff"><div class="snw"><div class="sn" id="sn-d3-aff" onclick="tog('d3-aff')">1</div></div><div class="sb2"><div class="stitle">Add affiliate links to Linktree + post IC03</div><div class="sdesc">Golf gear links from Day 1. Post the gear recommendation carousel.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d3-aff')">Show steps</button><div class="sdet" id="det-d3-aff">1. Check Amazon Associates -- approved yet? (Takes 1-3 days)<br>2. If approved: generate affiliate links for top 3 products<br>3. Update Linktree Link 3 with your affiliate links<br>4. Post IC03 from your content bank: 3 Tools That Improved My Golf Game For Under $50<br><br><div class="ib note">If Amazon not approved yet, skip and come back tomorrow. Move on to the video.</div></div></div></li>
+    <li class="si" id="step-d3-reel"><div class="snw"><div class="sn" id="sn-d3-reel" onclick="tog('d3-reel')">2</div></div><div class="sb2"><div class="stitle">Record and post your first Reel/TikTok</div><div class="sdesc">No face required. Demonstrate the Hip 90/90 stretch. 15-30 seconds.</div><div class="stime">~40 min</div><button class="expbtn" onclick="exp('d3-reel')">Show steps</button><div class="sdet" id="det-d3-reel">1. Set your phone on a chair pointing at the floor<br>2. Record yourself doing Hip 90/90 stretch for 20-30 seconds. Waist down is fine.<br>3. Open CapCut (free app). Import video. Trim to 20-30 seconds.<br>4. Add text overlay: If you can't do this comfortably... it's costing you yards<br>5. Tap Captions > Auto captions<br>6. Export. Post to Instagram Reels and TikTok.<br>7. Caption: This hip stretch unlocks your backswing. Do it daily. Free 5-drill guide in bio #golffitness #weekendgolfer<br><br><div class="ib tip">Film vertically (portrait). 15-30 seconds outperforms longer clips on both platforms.</div></div></div></li>
+    <li class="si" id="step-d3-comments"><div class="snw"><div class="sn" id="sn-d3-comments" onclick="tog('d3-comments')">3</div></div><div class="sb2"><div class="stitle">Leave 30 comments on golf accounts</div><div class="sdesc">Genuine, specific comments on 10 accounts. Drives profile visits.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d3-comments')">Show steps</button><div class="sdet" id="det-d3-comments">1. Search Instagram: #golfswing, #golffitness, #weekendgolfer<br>2. Find accounts with 10,000-100,000 followers<br>3. Leave 3 genuine comments per account. Example: The hip rotation point here is so underrated -- tight hips are the number 1 distance killer for weekend golfers<br>4. Do this for 10 accounts. About 2 minutes each.<br><br><div class="ib warn">Never say check my page. Specific, knowledgeable comments get clicks. Generic ones get ignored.</div></div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: Affiliate links live, first Reel posted to both platforms, 30 comments left on golf accounts.</div>
+</section>
+
+<!-- DAY 4 -->
+<section class="section" id="s-day4">
+  <div class="dh"><div class="dnb">4</div><div class="di"><h2>Email Funnel Live</h2><p>Set up 5-email automation in Beehiiv. This sells while you sleep.</p><span class="dt">~2 hours</span></div></div>
+  <div class="ib note" style="margin-bottom:1rem;">All 5 emails are fully written in Email Templates section. Today you paste them into Beehiiv and set the timing.</div>
+  <ul class="sl">
+    <li class="si" id="step-d4-pdf"><div class="snw"><div class="sn" id="sn-d4-pdf" onclick="tog('d4-pdf')">1</div></div><div class="sb2"><div class="stitle">Upload free PDF to Beehiiv</div><div class="sdesc">Gets auto-emailed to every new subscriber as Email 1 attachment.</div><div class="stime">~10 min</div><button class="expbtn" onclick="exp('d4-pdf')">Show steps</button><div class="sdet" id="det-d4-pdf">1. Log into beehiiv.com<br>2. Go to Settings > find Uploads or Files or Assets<br>3. Upload: SwingFit_5Drills_FreeGuide.pdf<br>4. Copy the direct download URL Beehiiv generates<br>5. Save it as: FREE PDF LINK -- you'll paste this into Email 1</div></div></li>
+    <li class="si" id="step-d4-seq"><div class="snw"><div class="sn" id="sn-d4-seq" onclick="tog('d4-seq')">2</div></div><div class="sb2"><div class="stitle">Build 5-email automation in Beehiiv</div><div class="sdesc">Audience > Automations > New automation. 5 emails. Set timing. Activate.</div><div class="stime">~60 min</div><button class="expbtn" onclick="exp('d4-seq')">Show steps</button><div class="sdet" id="det-d4-seq">1. Beehiiv: Audience > Automations > New automation<br>2. Name: Swing Fit Welcome Sequence<br>3. Trigger: Signed up / Subscribed<br>4. Add 5 email steps:<br>   Email 1: 0 delay (immediate) -- delivers PDF<br>   Email 2: 3 days delay<br>   Email 3: 7 days delay<br>   Email 4: 14 days delay<br>   Email 5: 21 days delay<br>5. For each: copy subject + body from Email Templates section<br>6. Replace every placeholder: [FREE PDF LINK] and [GUMROAD LINK]<br>7. Click Activate<br><br><div class="ib warn">Replace every [PLACEHOLDER] before activating. A broken link kills trust instantly.</div></div></div></li>
+    <li class="si" id="step-d4-test"><div class="snw"><div class="sn" id="sn-d4-test" onclick="tog('d4-test')">3</div></div><div class="sb2"><div class="stitle">Test the entire funnel end to end</div><div class="sdesc">Subscribe with a different email. Confirm Email 1 arrives with working PDF link.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d4-test')">Show steps</button><div class="sdet" id="det-d4-test">1. Open a private/incognito browser window<br>2. Go to your Beehiiv subscribe URL<br>3. Subscribe with a different email (a second Gmail works)<br>4. Check that inbox -- Email 1 should arrive within a few minutes<br>5. Click the PDF link -- confirm it downloads correctly<br>6. If it works: your funnel is live<br>7. If broken: go back to Beehiiv and check the PDF link in Email 1</div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: PDF uploaded, all 5 emails pasted with correct links and timing, automation activated, test subscriber received Email 1 with working PDF.</div>
+</section>
+
+<!-- DAY 5 -->
+<section class="section" id="s-day5">
+  <div class="dh"><div class="dnb">5</div><div class="di"><h2>Product Launch -- Go Live</h2><p>Gumroad goes live. Launch email sent. First sale is now possible.</p><span class="dt">~2 hours</span></div></div>
+  <ul class="sl">
+    <li class="si" id="step-d5-copy"><div class="snw"><div class="sn" id="sn-d5-copy" onclick="tog('d5-copy')">1</div></div><div class="sb2"><div class="stitle">Add description to Gumroad + publish</div><div class="sdesc">Full sales copy is in the Gumroad Copy section. Copy, paste, publish.</div><div class="stime">~30 min</div><button class="expbtn" onclick="exp('d5-copy')">Show steps</button><div class="sdet" id="det-d5-copy">1. Log into gumroad.com > your Swing Fit draft<br>2. Go to Gumroad Copy section in this dashboard<br>3. Copy headline > paste into Gumroad product name<br>4. Copy full description > paste into description field<br>5. Create product thumbnail in Canva (1280x720, dark green, SWING FIT in large text). Upload.<br>6. Confirm price $37.00 and PDF attached<br>7. Click Publish<br>8. Copy Gumroad product URL > paste into Linktree Link 2</div></div></li>
+    <li class="si" id="step-d5-email"><div class="snw"><div class="sn" id="sn-d5-email" onclick="tog('d5-email')">2</div></div><div class="sb2"><div class="stitle">Send launch email to your list</div><div class="sdesc">Even 2 subscribers -- send it. Build the habit.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d5-email')">Show steps</button><div class="sdet" id="det-d5-email">1. Beehiiv > New Post (one-time broadcast, not part of automation)<br>2. Subject: Your 8-week golf fitness program is ready<br>3. Body: Hi [First Name], the Swing Fit 8-Week Program is live. Get it here: [GUMROAD LINK] -- $37 (founder rate). Questions? Just reply. -- Coach Johnny<br>4. Send to full list</div></div></li>
+    <li class="si" id="step-d5-social"><div class="snw"><div class="sn" id="sn-d5-social" onclick="tog('d5-social')">3</div></div><div class="sb2"><div class="stitle">Post launch announcement on Instagram + TikTok</div><div class="sdesc">Simple outcome-focused post. Outcome first, features second.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d5-social')">Show steps</button><div class="sdet" id="det-d5-social">Caption: The Swing Fit 8-Week Program is live. No gym. No swing changes. 25 minutes, 3 days a week. 8 weeks. $37 -- link in bio. #golffitness #weekendgolfer #golfperformance #swingfit</div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: Gumroad published with full description, launch email sent, launch post on both platforms. Your business is open.</div>
+</section>
+
+<!-- DAY 6 -->
+<section class="section" id="s-day6">
+  <div class="dh"><div class="dnb">6</div><div class="di"><h2>Reddit + Facebook Traffic</h2><p>Drive targeted traffic outside your own audience.</p><span class="dt">1.5-2 hours</span></div></div>
+  <ul class="sl">
+    <li class="si" id="step-d6-reddit"><div class="snw"><div class="sn" id="sn-d6-reddit" onclick="tog('d6-reddit')">1</div></div><div class="sb2"><div class="stitle">Post Reddit threads</div><div class="sdesc">Posts are written in the Reddit Posts section. Link to freebie only -- never Gumroad.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d6-reddit')">Show steps</button><div class="sdet" id="det-d6-reddit">1. Create Reddit account if needed (reddit.com)<br>2. Go to Reddit Posts section > copy Post 1<br>3. Go to reddit.com/r/golf > New post > paste title and body<br>4. Replace [YOUR BEEHIIV LINK] with your subscribe URL<br>5. Post. Repeat with Post 3 in r/Fitness<br><br><div class="ib danger">NEVER link to Gumroad on Reddit. Always link to the free opt-in. Reddit removes paid product links as spam.</div></div></div></li>
+    <li class="si" id="step-d6-fb"><div class="snw"><div class="sn" id="sn-d6-fb" onclick="tog('d6-fb')">2</div></div><div class="sb2"><div class="stitle">Join 3 Facebook golf groups</div><div class="sdesc">Find groups with 5,000+ members. Engage today. Post freebie on Day 7.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d6-fb')">Show steps</button><div class="sdet" id="det-d6-fb">1. Search Facebook: golf improvement, men's golf, weekend golfers, senior golfers<br>2. Join 3-5 groups with 5,000+ members and recent posts<br>3. Once approved, leave 3-5 genuine comments on existing posts in each group<br>4. Do NOT post your offer yet -- build trust first<br>5. Day 7 you post the freebie offer</div></div></li>
+    <li class="si" id="step-d6-sched"><div class="snw"><div class="sn" id="sn-d6-sched" onclick="tog('d6-sched')">3</div></div><div class="sb2"><div class="stitle">Batch and schedule 5 posts in Meta Business Suite</div><div class="sdesc">Build one week ahead. Posts automatically at scheduled times.</div><div class="stime">~45 min</div><button class="expbtn" onclick="exp('d6-sched')">Show steps</button><div class="sdet" id="det-d6-sched">1. In Canva, build carousels for IC04, IC05, SC06, SC07, SC08 using your template<br>2. Go to business.facebook.com > Meta Business Suite<br>3. Connect Instagram if not connected<br>4. Create post > Instagram > upload slides > paste caption > set date and time<br>5. Repeat for all 5 posts<br><br><div class="ib tip">Best times: Tuesday-Friday, 7-9am and 6-8pm your time zone. Saturday 8am for golfers.</div></div></div></li>
+  </ul>
+  <div class="ib tip mt3">Done when: 2 Reddit posts live, 3 Facebook groups joined, 5 posts scheduled in Meta Business Suite.</div>
+</section>
+
+<!-- DAY 7 -->
+<section class="section" id="s-day7">
+  <div class="dh"><div class="dnb">7</div><div class="di"><h2>Review, Facebook Post, Plan Week 2</h2><p>Read the data. Post in FB groups. Set your weekly routine.</p><span class="dt">1-1.5 hours</span></div></div>
+  <ul class="sl">
+    <li class="si" id="step-d7-data"><div class="snw"><div class="sn" id="sn-d7-data" onclick="tog('d7-data')">1</div></div><div class="sb2"><div class="stitle">Check your numbers</div><div class="sdesc">Every platform. Write down what's working. Double it.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d7-data')">Show steps</button><div class="sdet" id="det-d7-data">Check each:<br>Gumroad: Total sales? Total revenue?<br>Beehiiv: Total subscribers? Email 1 open rate? (Good = 40%+)<br>Instagram: Which post got most saves? Replicate that format.<br>Reddit: Upvotes and link clicks?<br>Amazon: Any clicks or sales?<br><br><div class="ib tip">Most important metric this week: email subscribers. 20+ = working system. Revenue follows subscribers.</div></div></div></li>
+    <li class="si" id="step-d7-fbpost"><div class="snw"><div class="sn" id="sn-d7-fbpost" onclick="tog('d7-fbpost')">2</div></div><div class="sb2"><div class="stitle">Post freebie offer in Facebook golf groups</div><div class="sdesc">Can drive 20-50 email subscribers in one day in an active group.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('d7-fbpost')">Show steps</button><div class="sdet" id="det-d7-fbpost">Post in each group (vary slightly):<br><br>Hey everyone -- I put together a free 5-drill golf fitness guide for weekend golfers. No gym, just a resistance band. Free download: [YOUR BEEHIIV LINK]. Would love to know what you think if you try any of them.<br><br><div class="ib warn">Do NOT mention the $37 product. Lead with free guide only. Email sequence handles the sale.</div></div></div></li>
+    <li class="si" id="step-d7-routine"><div class="snw"><div class="sn" id="sn-d7-routine" onclick="tog('d7-routine')">3</div></div><div class="sb2"><div class="stitle">Set your weekly routine -- see Weekly Routine section</div><div class="sdesc">The sprint is over. Now it's a system. The Sunday batch session is your most important habit.</div><div class="stime">~15 min</div><button class="expbtn" onclick="exp('d7-routine')">Show steps</button><div class="sdet" id="det-d7-routine">Go to the Weekly Routine section in the sidebar. That is your permanent operating system. The Sunday batch session -- building 3-4 carousels and scheduling them for the week -- is the single habit that keeps everything running.</div></div></li>
+  </ul>
+  <div class="ib tip mt3">Sprint complete. Live product. Working email funnel. Active social channels. Multiple traffic sources. Now it is about consistency and doubling what works.</div>
+</section>
+
+<!-- WEEKLY ROUTINE -->
+<section class="section" id="s-weekly">
+  <div class="ph"><div class="ph-tag">Ongoing System -- New</div><div class="ph-title">Your Weekly Routine</div><div class="ph-sub">The 7-day sprint is over. This is how you run the business from Week 2 onward. About 60-90 minutes per week total.</div></div>
+  <div class="sun-hdr">
+    <div style="font-size:24px;">&#9728;&#65039;</div>
+    <div><h3>Sunday Batch Session -- Your Most Important Habit</h3><p>60-90 minutes every Sunday. Builds next week's content. Posts automatically all week.</p></div>
+  </div>
+  <div class="card">
+    <div class="ct">Sunday Batch -- Step by Step</div>
+    <div class="cs">Do this every Sunday. After 3 times it takes 45 minutes.</div>
+    <ul class="sl">
+      <li class="si" id="step-sun-pick"><div class="snw"><div class="sn" id="sn-sun-pick" onclick="tog('sun-pick')">1</div></div><div class="sb2"><div class="stitle">Pick your 3-4 posts for the week</div><div class="sdesc">Open your Social Content Bank Google Doc. Pick the next posts you haven't used yet. Note their IDs.</div><div class="stime">~5 min</div></div></li>
+      <li class="si" id="step-sun-canva"><div class="snw"><div class="sn" id="sn-sun-canva" onclick="tog('sun-canva')">2</div></div><div class="sb2"><div class="stitle">Build 3-4 carousels in Canva</div><div class="sdesc">Duplicate your saved template. Change the text only. Same format every time.</div><div class="stime">~40 min</div><button class="expbtn" onclick="exp('sun-canva')">Show steps</button><div class="sdet" id="det-sun-canva">1. Open Canva > your Swing Fit carousel template<br>2. Right-click the design > Duplicate<br>3. Change the cover slide headline to the new post's hook<br>4. Change slides 2-5 to the new content<br>5. Slide 6 CTA usually stays the same<br>6. Download all pages as PNG (Download > PNG > Download pages as separate files)<br>7. Repeat for each carousel<br><br><div class="ib tip">Don't redesign -- just change the text. Consistency in format builds brand recognition. Variety in content keeps it interesting.</div></div></div></li>
+      <li class="si" id="step-sun-sched"><div class="snw"><div class="sn" id="sn-sun-sched" onclick="tog('sun-sched')">3</div></div><div class="sb2"><div class="stitle">Schedule all posts in Meta Business Suite</div><div class="sdesc">business.facebook.com -- upload, paste caption, set date and time. One post per day.</div><div class="stime">~25 min</div><button class="expbtn" onclick="exp('sun-sched')">Show steps</button><div class="sdet" id="det-sun-sched">1. Go to business.facebook.com<br>2. Click Create post > select Instagram<br>3. Upload carousel slides (in order -- slide 1 first)<br>4. Paste caption from your content bank<br>5. Click Schedule and set date and time<br>6. Recommended schedule:<br>   Monday: 7:30am<br>   Wednesday: 7:30am<br>   Friday: 7:30am<br>   Saturday: 8:00am (golfers check phones Saturday morning)<br>7. Repeat for all posts<br>8. Close the laptop -- content is handled for the week<br><br><div class="ib tip">Once scheduled, everything posts automatically. You don't touch it again until next Sunday.</div></div></div></li>
+      <li class="si" id="step-sun-reel"><div class="snw"><div class="sn" id="sn-sun-reel" onclick="tog('sun-reel')">4</div></div><div class="sb2"><div class="stitle">Record 1-2 Reels for the week (optional but recommended)</div><div class="sdesc">Use a hook from Reel Hooks section. Demonstrate an exercise. 15-30 seconds. No face needed.</div><div class="stime">~20 min</div><button class="expbtn" onclick="exp('sun-reel')">Show steps</button><div class="sdet" id="det-sun-reel">1. Pick a hook from Social Posts > Reel Hooks<br>2. Set up phone. Record the exercise.<br>3. Edit in CapCut: trim, add text overlay, auto-captions<br>4. Save to camera roll<br>5. Post to TikTok and Instagram Reels on Tuesday and Thursday<br><br><div class="ib note">Reels get far more reach than carousels on a new account. Even one per week accelerates growth significantly.</div></div></div></li>
+      <li class="si" id="step-sun-tracker"><div class="snw"><div class="sn" id="sn-sun-tracker" onclick="tog('sun-tracker')">5</div></div><div class="sb2"><div class="stitle">Log all posts in the Post Tracker</div><div class="sdesc">Go to Post Tracker section. Add each post you scheduled. Track status, platform, and notes.</div><div class="stime">~5 min</div><button class="expbtn" onclick="exp('sun-tracker')">Show steps</button><div class="sdet" id="det-sun-tracker">1. Click Post Tracker in the sidebar<br>2. Click + on each day you have a post scheduled<br>3. Fill in: Post ID (e.g. IC03), title, status (Scheduled), platform (Instagram)<br>4. When a post actually goes live, click it and change status to Posted<br>5. Use the Notes field to track engagement (e.g. got 42 saves, pin this)</div></div></li>
+    </ul>
+  </div>
+  <div class="rc2">
+    <h3>Daily Routine (15 minutes max each day)</h3>
+    <div class="rd"><div class="rdl">Monday</div><div class="rdt">Post auto-posts. Respond to Instagram comments and DMs.</div></div>
+    <div class="rd"><div class="rdl">Tuesday</div><div class="rdt">Post auto-posts. Post 1 Reel to TikTok and Instagram Reels.</div></div>
+    <div class="rd"><div class="rdl">Wednesday</div><div class="rdt">Post auto-posts. Post to 1 Facebook group. Check Beehiiv subscriber count.</div></div>
+    <div class="rd"><div class="rdl">Thursday</div><div class="rdt">Post 1 Reddit value thread. Reply to any comments from previous Reddit posts.</div></div>
+    <div class="rd"><div class="rdl">Friday</div><div class="rdt">Post auto-posts. Check Gumroad and Beehiiv numbers. Note what performed best.</div></div>
+    <div class="rd"><div class="rdl">Saturday</div><div class="rdt">Post auto-posts. Nothing else. Go play golf.</div></div>
+    <div class="rd"><div class="rdl">Sunday</div><div class="rdt"><strong>BATCH SESSION: Build 3-4 carousels. Schedule for the week. Record 1-2 Reels. Log in tracker.</strong></div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Scaling Milestones</div>
+    <div class="cs">Hit these numbers and unlock the next level:</div>
+    <ul class="sl">
+      <li class="si" id="step-m1"><div class="snw"><div class="sn" id="sn-m1" onclick="tog('m1')" style="background:var(--gold);">$</div></div><div class="sb2"><div class="stitle">100 email subscribers -- Run a $20 Instagram boost</div><div class="sdesc">Boost your best-performing post. Target: men, ages 35-65, interest in golf. $3/day for 7 days.</div></div></li>
+      <li class="si" id="step-m2"><div class="snw"><div class="sn" id="sn-m2" onclick="tog('m2')" style="background:var(--gold);">$</div></div><div class="sb2"><div class="stitle">10 Gumroad sales -- Add testimonials to product page</div><div class="sdesc">Email buyers and ask: What changed for you after using the program? Paste their reply on Gumroad.</div></div></li>
+      <li class="si" id="step-m3"><div class="snw"><div class="sn" id="sn-m3" onclick="tog('m3')" style="background:var(--gold);">$</div></div><div class="sb2"><div class="stitle">$200 revenue -- Start a YouTube channel</div><div class="sdesc">Long-form exercise tutorials. Massive SEO traffic. Search golf hip mobility exercise -- that is your audience looking for you.</div></div></li>
+      <li class="si" id="step-m4"><div class="snw"><div class="sn" id="sn-m4" onclick="tog('m4')" style="background:var(--gold);">$</div></div><div class="sb2"><div class="stitle">$500 revenue -- Add a $97 upsell product</div><div class="sdesc">Video version of the program, 4-week advanced program, or monthly membership. Your email list buys it first.</div></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- POST TRACKER -->
+<section class="section" id="s-tracker">
+  <div class="ph"><div class="ph-tag">Post Tracker -- New</div><div class="ph-title">Content Calendar</div><div class="ph-sub">Track every post -- scheduled, posted, or draft. Click + on any day to add a post. Saves automatically in your browser.</div></div>
+  <div class="legend">
+    <div class="li2"><div class="ld" style="background:#C0DDB0;border:1.5px solid #A0BD90;"></div>Posted</div>
+    <div class="li2"><div class="ld" style="background:var(--gold-l);border:1.5px solid var(--gold);"></div>Scheduled</div>
+    <div class="li2"><div class="ld" style="background:var(--g4);border:1.5px dashed #ccc;"></div>Empty</div>
+  </div>
+  <div class="wknav">
+    <button onclick="prevWeek()">&#8592; Prev</button>
+    <span id="wk-lbl" style="font-family:sans-serif;font-size:14px;font-weight:700;color:var(--dg);flex:1;text-align:center;"></span>
+    <button onclick="nextWeek()">Next &#8594;</button>
+  </div>
+  <div class="tgrid" id="tgrid"></div>
+  <div class="card mt2">
+    <div class="ct">All Posts -- Full Log</div>
+    <div class="cs">Every post you have tracked, sorted by date.</div>
+    <div id="post-log" style="font-family:sans-serif;font-size:13px;color:var(--g2);"></div>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<section class="section" id="s-social">
+  <div class="ph"><div class="ph-tag">Content Asset</div><div class="ph-title">30 Social Posts</div><div class="ph-sub">All copy written. Click Copy on any post and paste directly into Instagram, TikTok, or Facebook.</div></div>
+  <div class="tb">
+    <button class="tbbtn active" onclick="showTab('social','car')">Carousels (5)</button>
+    <button class="tbbtn" onclick="showTab('social','sin')">Single Posts (15)</button>
+    <button class="tbbtn" onclick="showTab('social','rel')">Reel Hooks (10)</button>
+  </div>
+  <div class="tbp active" id="social-car"><div id="car-container"></div></div>
+  <div class="tbp" id="social-sin"><div id="sin-container"></div></div>
+  <div class="tbp" id="social-rel"><div id="rel-container"></div></div>
+</section>
+
+<!-- EMAILS -->
+<section class="section" id="s-emails">
+  <div class="ph"><div class="ph-tag">Content Asset</div><div class="ph-title">5-Email Welcome Sequence</div><div class="ph-sub">Copy each email into Beehiiv. Replace all [PLACEHOLDERS] with your actual links before activating.</div></div>
+  <div class="ib warn" style="margin-bottom:1rem;"><strong>Replace before activating:</strong> [FREE PDF LINK] with your Beehiiv PDF URL and [GUMROAD LINK] with your Gumroad product URL</div>
+  <div id="email-container"></div>
+</section>
+
+<!-- GUMROAD -->
+<section class="section" id="s-gumroad">
+  <div class="ph"><div class="ph-tag">Content Asset</div><div class="ph-title">Gumroad Product Page Copy</div><div class="ph-sub">Paste into your Gumroad description on Day 5.</div></div>
+  <div class="card"><div class="ct">Headline</div><div class="cb"><pre>Add 15-25 Yards, Play Pain-Free, and Feel Athletic on the Golf Course -- in 8 Weeks</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Subheadline</div><div class="cb"><pre>The complete golf fitness program for weekend golfers who want to hit longer and finish strong on 18 -- without changing their swing or stepping inside a gym.</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Full Description</div><div class="cb"><pre>WHO THIS IS FOR
+
+For the weekend golfer who plays 2-4 times per month and knows there is more distance available -- but has not addressed the physical side of golf yet.
+
+---
+
+WHAT YOU GET
+
+Complete 8-week Swing Fit training program (26-page PDF)
+25+ exercises -- resistance bands and bodyweight only, zero gym
+4 phases: Mobility, Strength, Power, Maintenance
+Day-by-day workout calendar
+Every exercise with how-to instructions and coaching cues
+BONUS: Nutrition for Golfers guide
+BONUS: 8-Minute Pre-Round Warm-Up routine
+BONUS: Modifications guide for back pain, knee issues, any fitness level
+Lifetime access
+
+---
+
+WHAT HAPPENS IN 8 WEEKS
+
+Weeks 1-2: Unlock hip and thoracic mobility. Most golfers feel a backswing difference within 2 weeks.
+Weeks 3-4: Build glute and rotational strength. Average distance gain: 8-12 yards.
+Weeks 5-6: Peak explosive power. Swing speed increases. Back pain often resolves here.
+Weeks 7-8: Integration. Hole 17 feels like Hole 1.
+
+---
+
+COMMON QUESTIONS
+
+Q: Do I need a gym?
+A: No. Resistance bands ($15-25 on Amazon) are all you need.
+
+Q: I am in my 50s or 60s. Is this too advanced?
+A: No. Designed with older golfers in mind. Full modifications guide included.
+
+Q: I have lower back pain. Will this help?
+A: Lower back pain in golfers is almost always a hip mobility problem. Most golfers report improvement by Week 5.
+
+Q: What if I do not see results?
+A: Complete the first 2 weeks. If you do not feel a difference, email us for a full refund.
+
+---
+
+One round of golf with a cart costs $65-$150. This program is $37 -- one time -- and it improves every round you play for the rest of your life.</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+</section>
+
+<!-- BIOS -->
+<section class="section" id="s-bios">
+  <div class="ph"><div class="ph-tag">Content Asset</div><div class="ph-title">Bios, Linktree and Platform Copy</div><div class="ph-sub">Ready to copy-paste into each platform. Everything points to the email opt-in first.</div></div>
+  <div class="card"><div class="ct">Instagram Bio</div><div class="cb"><pre>Golf fitness for weekend warriors
+Add 20 yds -- Play pain-free -- No gym
+Free 5-drill guide below</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div><div class="ib note mt2">Website field: set to your Linktree URL (linktr.ee/SwingFitPro)</div></div>
+  <div class="card"><div class="ct">TikTok Bio</div><div class="cb"><pre>Golf fitness for real golfers | Free guide in link | No gym. Just more distance.</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Linktree Setup</div><div class="cb"><pre>LINK 1 (put this first -- most important):
+FREE: 5 Drills to Add 15 Yards -- Download Now
+URL: [Your Beehiiv subscribe link]
+
+LINK 2:
+Swing Fit 8-Week Program -- $37
+URL: [Your Gumroad product link]
+
+LINK 3:
+Golf Fitness Gear I Recommend (Amazon)
+URL: [Your Amazon affiliate links]
+
+LINK 4:
+Follow on Instagram @SwingFitPro
+URL: instagram.com/SwingFitPro</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Beehiiv Subscribe Page</div><div class="cb"><pre>Headline: Get Your Free Golf Fitness Guide
+Subheading: 5 Drills to Add 15 Yards in 2 Weeks -- Free Download
+Button: Send Me the Free Guide
+Success message: Check your inbox -- your guide is on the way! If you do not see it in 5 minutes, check spam.</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+</section>
+
+<!-- REDDIT -->
+<section class="section" id="s-reddit">
+  <div class="ph"><div class="ph-tag">Content Asset</div><div class="ph-title">Reddit Posts</div><div class="ph-sub">Always link to the FREE opt-in only. Never link to Gumroad on Reddit.</div></div>
+  <div class="card"><div class="ct">Post 1 -- r/golf</div><div class="cb"><pre>TITLE: I put together a free 5-drill golf fitness guide -- grab it at the link below
+
+Hey r/golf,
+
+I have been putting together golf fitness content for weekend golfers and a lot of people have asked for a starting point.
+
+So I put together a free 5-drill guide. These are the 5 exercises I would give any golfer who wants more distance without swing changes. Takes about 20 minutes, 3 times per week.
+
+[YOUR BEEHIIV SUBSCRIBE LINK]
+
+Covers: Hip 90/90 Rotation, Banded Hip Drive, Thoracic Spine Rotation, Rotational Band Chop, Single-Leg Balance.
+
+No gym required. Resistance band for one drill ($12 on Amazon).
+
+Happy to answer questions in the comments.</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Post 2 -- r/golf (story format)</div><div class="cb"><pre>TITLE: Lower back pain from golf -- I finally figured out what was causing it (not my back)
+
+Played golf for 20 years with intermittent lower back pain. Tried everything. Always came back.
+
+Eight months ago I started working on hip mobility. Hip 90/90 stretch, thoracic rotation, glute activation. The back pain is basically gone.
+
+Lower back pain in golf is almost always a hip problem. When hips do not rotate freely, the lower back compensates -- 80+ times per round. That is where the pain comes from.
+
+The two drills that made the biggest difference:
+1. Hip 90/90 stretch -- 3 minutes daily, both sides
+2. Thoracic rotation (side-lying) -- 10 reps each side
+
+Full breakdown in the free guide I made: [YOUR BEEHIIV LINK]
+
+Anyone else found the hip-back connection?</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>
+  <div class="card"><div class="ct">Post 3 -- r/Fitness</div><div class="cb"><pre>TITLE: Anyone use resistance band training specifically for golf? Here is what worked
+
+Golf-specific fitness question for this community.
+
+I have been doing resistance band training for golf for 6 months. Focus: hip mobility, glute strength, rotational power.
+
+Added about 20 yards and my lower back pain from playing is gone.
+
+What moved the needle most:
+
+Hip and Glute work: Banded hip thrusts 3x12, lateral band walks 3x12 per side, single-leg RDL 3x8 per side.
+Rotational power: Band chops high-to-low 3x12 per side, reverse band lifts 3x12 per side, Pallof press 3x10 per side.
+Daily mobility: Hip 90/90 stretch, thoracic rotation.
+
+Anyone else training specifically for golf?
+
+I put all of this in a free guide if anyone wants the full breakdown: [YOUR BEEHIIV LINK]</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div><div class="ib danger mt2">Never link to Gumroad on Reddit. Always the free opt-in only.</div></div>
+</section>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="modal">
+  <div class="mbox">
+    <h3 id="mtitle">Add Post</h3>
+    <label>Post ID (e.g. IC01, SC06, RH03)</label>
+    <input type="text" id="m-id" placeholder="IC03">
+    <label>Title or Description</label>
+    <input type="text" id="m-title" placeholder="3 Stretches for Desk Golfers">
+    <label>Status</label>
+    <select id="m-status">
+      <option value="posted">Posted</option>
+      <option value="scheduled">Scheduled</option>
+      <option value="draft">Draft</option>
+    </select>
+    <label>Platform</label>
+    <select id="m-plat">
+      <option value="Instagram">Instagram</option>
+      <option value="TikTok">TikTok</option>
+      <option value="Both">Instagram + TikTok</option>
+      <option value="Facebook">Facebook</option>
+      <option value="Reddit">Reddit</option>
+    </select>
+    <label>Notes (optional)</label>
+    <textarea id="m-notes" placeholder="e.g. 42 saves, pin this"></textarea>
+    <input type="hidden" id="m-day">
+    <input type="hidden" id="m-slot">
+    <div class="mbtns">
+      <button class="bp" onclick="savePost()">Save Post</button>
+      <button class="bs" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SK='sfv4';
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let state={steps:new Set(),posts:{},wks:getSun()};
+function getSun(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return d.getTime();}
+function dk(ts){const d=new Date(ts);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function load(){try{const s=localStorage.getItem(SK);if(s){const p=JSON.parse(s);state.steps=new Set(p.steps||[]);state.posts=p.posts||{};state.wks=p.wks||getSun();}}catch(e){}}
+function save(){try{localStorage.setItem(SK,JSON.stringify({steps:[...state.steps],posts:state.posts,wks:state.wks}));}catch(e){}}
+function go(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));document.getElementById('s-'+id)?.classList.add('active');document.querySelectorAll('.ni').forEach(n=>{if(n.getAttribute('onclick')?.includes("'"+id+"'"))n.classList.add('active');});window.scrollTo(0,0);if(id==='tracker')renderTracker();}
+function tog(id){const el=document.getElementById('step-'+id),sn=document.getElementById('sn-'+id);if(!el||!sn)return;if(state.steps.has(id)){state.steps.delete(id);el.classList.remove('done2');sn.classList.remove('ck');sn.textContent=sn.dataset.o||'?';}else{state.steps.add(id);el.classList.add('done2');sn.classList.add('ck');sn.dataset.o=sn.textContent;sn.textContent='';}save();upd();}
+function exp(id){const el=document.getElementById('step-'+id);if(el)el.classList.toggle('exp');const btn=el?.querySelector('.expbtn');if(btn)btn.textContent=el.classList.contains('exp')?'Hide steps':'Show steps';}
+function upd(){const all=document.querySelectorAll('.si[id^="step-"]'),total=all.length,done=state.steps.size,pct=total>0?Math.round(done/total*100):0;document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('pct-lbl').textContent=pct+'%';document.getElementById('steps-stat').textContent=pct+'%';const pc=Object.values(state.posts).reduce((a,b)=>a+b.length,0);document.getElementById('posts-stat').textContent=pc;}
+function restoreSteps(){state.steps.forEach(id=>{const el=document.getElementById('step-'+id),sn=document.getElementById('sn-'+id);if(el&&sn){el.classList.add('done2');sn.classList.add('ck');sn.dataset.o=sn.textContent;sn.textContent='';}});}
+function showTab(g,p){document.querySelectorAll('#s-'+g+' .tbbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('#s-'+g+' .tbp').forEach(t=>t.classList.remove('active'));document.getElementById(g+'-'+p)?.classList.add('active');event.target.classList.add('active');}
+function cp(btn){const pre=btn.parentElement.querySelector('pre');if(!pre)return;navigator.clipboard.writeText(pre.textContent).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);}).catch(()=>{const t=document.createElement('textarea');t.value=pre.textContent;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});}
+function prevWeek(){state.wks-=7*86400000;save();renderTracker();}
+function nextWeek(){state.wks+=7*86400000;save();renderTracker();}
+function renderTracker(){const grid=document.getElementById('tgrid');if(!grid)return;const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});const wsd=new Date(state.wks),wed=new Date(state.wks+6*86400000);document.getElementById('wk-lbl').textContent=fmt(wsd)+' to '+fmt(wed);grid.innerHTML='';for(let i=0;i<7;i++){const ts=state.wks+i*86400000,k=dk(ts),posts=state.posts[k]||[],d=new Date(ts);const col=document.createElement('div');col.className='tcol';col.innerHTML='<div class="tdlbl">'+DAYS[d.getDay()]+'<br><span style="font-weight:400;font-size:9px;">'+(d.getMonth()+1)+'/'+d.getDate()+'</span></div>';posts.forEach((p,idx)=>{const sl=document.createElement('div');sl.className='slot '+p.status;sl.innerHTML='<button class="slot-del" onclick="event.stopPropagation();delPost(\''+k+'\','+idx+')">x</button><div class="slot-id">'+(p.id||'-')+'</div><div class="slot-title">'+(p.title||'')+'</div><div class="slot-st '+(p.status||'')+'">'+( p.status==='posted'?'Posted':p.status==='scheduled'?'Scheduled':'Draft')+'</div><div style="font-size:9px;color:var(--g3);margin-top:2px;">'+(p.plat||'')+'</div>';sl.onclick=()=>openModal(k,idx,p);col.appendChild(sl);});const ab=document.createElement('button');ab.className='addbtn';ab.textContent='+';ab.onclick=()=>openModal(k,-1,null);col.appendChild(ab);grid.appendChild(col);}renderLog();}
+function openModal(k,idx,ex){document.getElementById('m-id').value=ex?.id||'';document.getElementById('m-title').value=ex?.title||'';document.getElementById('m-status').value=ex?.status||'posted';document.getElementById('m-plat').value=ex?.plat||'Instagram';document.getElementById('m-notes').value=ex?.notes||'';document.getElementById('m-day').value=k;document.getElementById('m-slot').value=idx;document.getElementById('mtitle').textContent=idx>=0?'Edit Post':'Add Post';document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+function savePost(){const k=document.getElementById('m-day').value,idx=parseInt(document.getElementById('m-slot').value),post={id:document.getElementById('m-id').value.trim(),title:document.getElementById('m-title').value.trim(),status:document.getElementById('m-status').value,plat:document.getElementById('m-plat').value,notes:document.getElementById('m-notes').value.trim()};if(!state.posts[k])state.posts[k]=[];if(idx>=0)state.posts[k][idx]=post;else state.posts[k].push(post);save();closeModal();renderTracker();upd();}
+function delPost(k,idx){if(!state.posts[k])return;state.posts[k].splice(idx,1);if(!state.posts[k].length)delete state.posts[k];save();renderTracker();upd();}
+function renderLog(){const log=document.getElementById('post-log');if(!log)return;const all=[];Object.entries(state.posts).forEach(([k,ps])=>ps.forEach(p=>all.push({k,...p})));all.sort((a,b)=>new Date(a.k)-new Date(b.k));if(!all.length){log.innerHTML='<p style="color:var(--g3);font-style:italic;">No posts tracked yet. Click + on any day in the tracker above.</p>';return;}const sc=s=>s==='posted'?'var(--bg2)':s==='scheduled'?'var(--amber)':'var(--g3)';log.innerHTML=all.map(p=>'<div style="display:flex;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--g4);"><span style="color:var(--g3);min-width:78px;">'+p.k+'</span><span style="font-weight:700;color:var(--dg);min-width:48px;">'+(p.id||'-')+'</span><span style="flex:1;">'+(p.title||'')+'</span><span style="color:'+sc(p.status)+';font-weight:700;font-size:11px;text-transform:uppercase;">'+p.status+'</span><span style="color:var(--g3);font-size:11px;">'+(p.plat||'')+'</span></div>').join('');}
+function seedPosts(){if(Object.keys(state.posts).length>0)return;const t=new Date();t.setHours(0,0,0,0);const td=dk(t.getTime()),tom=dk(t.getTime()+86400000);state.posts[td]=[{id:'IC01',title:'3 Stretches for Desk Golfers',status:'posted',plat:'Instagram',notes:'First post -- pinned to profile'}];state.posts[tom]=[{id:'IC02',title:'Real Reason Losing Distance',status:'scheduled',plat:'Instagram',notes:'Scheduled via Meta Business Suite'}];save();}
+const carData=[
+{id:'IC01',status:'POSTED',fmt:'Carousel 6 slides',hook:'3 Stretches That Add Distance For Desk Golfers',cap:'8 hours at a desk is costing you yards on the golf course.\n\nYour hip flexors shorten when you sit. Short hip flexors mean a restricted backswing. A restricted backswing means less distance -- no matter how hard you swing.\n\nThese 3 stretches fix it. Takes 8 minutes.\n\nSave this post and do them before your next round.\n\nFree 5-drill guide in bio\n\n#golffitness #golfworkout #golfswing #weekendgolfer #golftraining #golfperformance #golflife #golftips #seniorsgolf #golfcourse'},
+{id:'IC02',status:'SCHEDULED',fmt:'Carousel 6 slides',hook:'The Real Reason You\'re Losing Distance (It\'s Not Your Swing)',cap:'You\'ve taken lessons. You\'ve watched YouTube. You\'ve bought new clubs.\n\nAnd you\'re still losing distance.\n\nHere\'s what no one tells you: if your body can\'t physically execute the swing, technique coaching doesn\'t stick.\n\nThe fix isn\'t another lesson. It\'s physical preparation.\n\nFree 5-drill guide in bio -- add 15 yards in 2 weeks.\n\n#golffitness #golfswingpower #golfworkout #addyards #weekendgolfer #golftraining #golffit #seniorsgolf #golfperformance'},
+{id:'IC03',fmt:'Carousel affiliate',hook:'3 Tools That Improved My Golf Game For Under $50',cap:'I get asked about golf fitness equipment constantly.\n\nHere\'s the honest answer: you need almost nothing.\n\nThese 3 items are what I actually use and recommend. Under $50 total. All links in bio.\n\n#golffitness #golfequipment #golfworkout #weekendgolfer #golfgear #golftraining #golflife'},
+{id:'IC04',fmt:'Carousel 7 slides',hook:'The 8-Minute Pre-Round Warm-Up That Changes Your First Tee Shot',cap:'Your first tee shot tells me everything about your warm-up routine.\n\nIf you walked from the parking lot to the tee, you\'re swinging with a cold body. That\'s why the first few holes always feel rusty.\n\nThis 8-minute routine fixes that.\n\nFull warm-up guide in bio -- free.\n\n#golftips #golfwarmup #golffitness #firstteeshot #weekendgolfer #golfperformance #golflife #golfswing'},
+{id:'IC05',fmt:'Carousel 6 slides',hook:'Why Your Golf Falls Apart on Holes 14-18',cap:'You\'re playing great through 13 holes. Then everything falls apart.\n\nEvery golfer knows this feeling. And almost every golfer blames their mental game.\n\nIt\'s physical. Muscular fatigue changes your swing mechanics on the back 9.\n\nThe fix takes 6 weeks. Details in bio.\n\n#golf #golffitness #golfendurance #back9 #weekendgolfer #golfperformance #golfworkout #golffit'},
+];
+const sinData=[
+{id:'SC06',fmt:'Single image',hook:'Your glutes are the most important muscle in your golf swing.',body:'Your glutes generate the ground force. Your core transfers it. Your arms deliver it.\n\nIf your glutes are weak from years of sitting, the entire power chain breaks down.\n\nA simple test: single-leg squat. If your knee caves inward, your glutes aren\'t firing. That is costing you 10-15 yards per drive.\n\nFix: 3 sets of 15 banded glute bridges, 3 days a week. 6 weeks.\n\nFree drill guide in bio\n\n#golffitness #golfpower #golfswing #glutes #weekendgolfer #golfworkout #golfperformance'},
+{id:'SC07',fmt:'Quote post',hook:'The best swing coach in the world can\'t fix what your body physically can\'t do.',body:'Read that again.\n\nIf your hips don\'t rotate freely -- lessons don\'t stick.\nIf your thoracic spine is stiff -- lessons don\'t stick.\nIf your glutes aren\'t firing -- lessons don\'t stick.\n\nYou\'re not bad at golf. You\'re undertrained for golf.\n\nFix the body. The swing follows.\n\nFree guide in bio.\n\n#golffitness #golfmindset #golfswing #weekendgolfer #golfcoach #golfperformance'},
+{id:'SC08',fmt:'Reel caption',hook:'I asked 50 weekend golfers what they want more of. 47 said distance.',body:'So here\'s the honest answer:\n\nYou don\'t need new clubs.\nYou don\'t need a swing rebuild.\nYou need a more athletic body.\n\nYour swing speed is limited by your ability to rotate, stabilize, and fire power in sequence.\n\nThese 5 drills address all three. Takes 20 minutes. Free in bio.\n\n#golffitness #golfswingspeed #addyards #golfworkout #weekendgolfer #golftips #golftraining'},
+{id:'SC09',fmt:'Engagement post',hook:'Honest question for the golfers here:',body:'Do you have a golf fitness routine?\n\nYes, I train specifically for golf\nNo, I just play\n\nBe honest. Most weekend golfers answer no. That is exactly why this page exists.\n\nDrop your answer in the comments\n\n#golffitness #weekendgolfer #golfcommunity #golflife #golfer'},
+{id:'SC10',fmt:'Results post',hook:'8 weeks. No swing changes. Here\'s what changed.',body:'Week 1: Hip mobility was the limiter. Hitting 220 off the tee.\nWeek 4: Hip mobility improved. Backswing opened. Hitting 234.\nWeek 8: Glutes firing. Full rotation chain active. Hitting 248. Back pain gone.\n\nNo new clubs. No new lessons. Just 25 minutes, 3 days a week, for 8 weeks.\n\nFull program in bio.\n\n#golffitness #golfresults #weekendgolfer #golfperformance #addyards #golfworkout #golftransformation'},
+{id:'SC11',fmt:'Educational',hook:'The 3 physical traits that separate 10-handicappers from 20-handicappers',body:'Not what you think.\n\n1. Hip mobility -- 10-hdcps rotate more freely. Not better technique. Better hips.\n2. Core stability -- 10-hdcps have a stable center. Club travels a consistent path.\n3. Balance -- 10-hdcps are in balance at impact. 20-hdcps are always fighting the shot.\n\nAll 3 are trainable. All 3 respond fast.\n\nFree drill guide in bio.\n\n#golftips #golfhandicap #golffitness #golfperformance #weekendgolfer #golfswing'},
+{id:'SC12',fmt:'Quick tip',hook:'Do this for 60 seconds before you tee off.',body:'Hip circles. 10 each direction, each leg.\n\nStand on one foot. Draw big circles with your raised knee.\n\nLubricates the hip joint. Activates the glute medius. Wakes up the rotation chain.\n\nCosts 60 seconds. No one does it. That is exactly why the people who do look different on the first tee.\n\n#golftips #golfwarmup #golffitness #firsttee #weekendgolfer #golflife'},
+{id:'SC13',fmt:'Myth-busting',hook:'Golf myth: you need to be flexible to hit it far.',body:'Reality: you need to be strong in your range of motion.\n\nFlexibility without strength is useless in golf.\n\nGolf fitness = mobility + strength in that range of motion.\n\nBand chops, hip thrusts, and rotational slams train exactly this.\n\nThat is what the Swing Fit program trains.\n\n#golffitness #golfmyth #golfswingpower #weekendgolfer #golfworkout #golfperformance'},
+{id:'SC14',fmt:'Relatable',hook:'Me on hole 1: smooth swing, great contact. Me on hole 15:',body:'Hole 15 golf is a different sport.\n\nThe back 9 fall-apart is real. And it is physical, not mental.\n\nMuscular fatigue changes your swing mechanics. Your body starts compensating.\n\nWeek 5 of Swing Fit is called Back 9 Endurance for exactly this reason.\n\nFull program in bio.\n\n#golf #golfhumor #weekendgolfer #back9 #golffitness #golflife #relatable'},
+{id:'SC15',fmt:'Social proof',hook:'Results from golfers who\'ve used the program:',body:'"I added 18 yards in the first 4 weeks." -- Golfer, 58\n\n"The back pain I\'ve had for 3 years is basically gone after Week 6." -- Golfer, 51\n\n"I\'ve never felt physically prepared for golf before. Now I do." -- Golfer, 44\n\nFull 8-week program in bio.\n\n#golffitness #golfresults #weekendgolfer #golfperformance #swingfit #golfworkout'},
+{id:'SC16',fmt:'Educational',hook:'What your lower back pain during golf is actually telling you',body:'It is almost never a back problem. It is a hip problem.\n\nWhen hips do not rotate freely, the lower back compensates -- 80+ times per round. That is where the pain comes from.\n\nThe fix: hip mobility work, not back stretches.\n\nDrill 1 in my free guide addresses this directly.\n\n#golffitness #golfbackpain #weekendgolfer #golftips #hipflexors #golfhealth'},
+{id:'SC17',fmt:'Value post',hook:'The single best exercise for golf. It is not the plank.',body:'It is the band chop.\n\nIt trains the exact rotational sequence of your swing -- ground force, core transfer, arm delivery -- as one connected movement.\n\nA plank trains static stability. A band chop trains dynamic rotational power. Golf is dynamic.\n\n3 sets of 12 per side. 3 days a week.\n\nFree guide shows you exactly how: link in bio.\n\n#golffitness #golfexercise #bandchop #weekendgolfer #golfworkout #golfswingpower'},
+{id:'SC18',fmt:'Beginner post',hook:'Never done golf fitness? Start here. 5 moves, 20 minutes.',body:'If you have never trained specifically for golf, this is your starting point.\n\nNo experience needed. No gym. Just a resistance band and 20 minutes.\n\nSave this post. It is your Day 1.\n\nFull free guide in bio\n\n#golffitness #beginners #weekendgolfer #golfworkout #golftraining #starthere #golffit'},
+{id:'SC19',fmt:'Engagement',hook:'What\'s the one thing you wish you could improve about your golf game?',body:'Drop it in the comments. I read every one.\n\nMost common answers:\nMore distance\nConsistency\nBack 9 performance\nLess back pain\nMore energy at hole 18\n\nEvery single one is a physical fitness problem, not a technique problem.\n\n#golf #weekendgolfer #golfcommunity #golffitness #golflife'},
+{id:'SC20',fmt:'Seasonal',hook:'Golf season is coming. Here\'s your 8-week timeline.',body:'Weeks 1-2: Unlock mobility restrictions limiting your swing\nWeeks 3-4: Build strength that generates power\nWeeks 5-6: Train explosive speed and endurance\nWeeks 7-8: Integrate and peak for the season\n\nStart now. Show up to your first round different.\n\nFull program in bio.\n\n#golfseason #golffitness #weekendgolfer #golfready #golfperformance #swingfit #golfworkout'},
+];
+const relData=['Watch what happens when I add this one drill to my pre-round routine','The reason your swing falls apart on hole 14 has nothing to do with your mental game','I trained these 3 muscles for 8 weeks. Here\'s what happened to my driver distance','Can you do this? Most golfers can\'t hold this position for 10 seconds. That is the problem.','Golf instructor vs golf fitness trainer -- here\'s the difference and why you need both','I tested my swing speed before and after 8 weeks of golf fitness training','The 60-second pre-tee routine that changes your first drive','I asked 10 golfers to do a single-leg squat. Here\'s what it told me about their game','This is what tight hips look like in a golf swing','Stop stretching your back. Stretch this instead'];
+const emailData=[
+{num:1,timing:'Immediately on opt-in',subject:'Your free guide is inside (+ one thing to do tonight)',preview:'5 drills. 15 yards. Starts today.',body:'Hi first_name,\n\nWelcome -- your free guide is attached to this email.\n\nDOWNLOAD YOUR FREE GUIDE: [FREE PDF LINK]\n\nInside you\'ll find 5 targeted drills that address the physical restrictions most weekend golfers don\'t know they have.\n\nOne thing I want you to do tonight:\n\nOpen the guide to Drill 3 -- the Thoracic Spine Rotation. Lie on your side, stack your knees, and try to rotate your top shoulder to the floor behind you.\n\nFor most golfers, that range of motion is severely limited. That limitation is costing you 4-6 yards on every drive.\n\nTry it. See how far you get. That\'s your starting point.\n\nAny questions, just reply to this email.\n\n-- Coach Johnny\nSwing Fit'},
+{num:2,timing:'Day 3 after opt-in',subject:'The number 1 physical mistake weekend golfers make',preview:"It's not tight hamstrings. It's this.",body:'Hi first_name,\n\nQuick check-in -- did you try Drill 3 from the guide?\n\nIf you did, you likely discovered that your thoracic spine (mid-back) doesn\'t rotate very far. That\'s normal. That\'s the problem.\n\nYour golf swing requires 90 degrees of shoulder turn. When the T-spine is stiff, your lower back over-rotates to compensate. That costs you range AND puts your lower back at risk.\n\nWhat happens after 8 weeks of consistent work:\n- Full thoracic rotation opens up\n- Backswing deepens without lower back strain\n- Swing speed increases\n- Lower back pain from golf often disappears\n\nThis is what the Swing Fit 8-Week Program is built around.\n\nGet it here: [GUMROAD LINK] -- $37\n\n-- Coach Johnny\nSwing Fit'},
+{num:3,timing:'Day 7 after opt-in',subject:'Real talk: what to expect in 8 weeks',preview:'Weeks 1-2 feel subtle. Weeks 5-8 feel electric.',body:'Hi first_name,\n\nHere\'s what actually happens over 8 weeks of Swing Fit:\n\nWeeks 1-2: Subtle changes. Hips start moving better. You might not notice -- but your playing partners might.\n\nWeeks 3-4: First distance bump. Glutes firing. Average gain: 8-12 yards.\n\nWeeks 5-6: Power output peaks. Swing speed noticeably increases. Back pain often resolves.\n\nWeeks 7-8: Integration. Hole 17 feels like Hole 1.\n\nTotal average: 15-25 yards. Consistent contact. Fatigue-free back 9.\n\nGet the full program: [GUMROAD LINK] -- $37\n\n-- Coach Johnny\nSwing Fit'},
+{num:4,timing:'Day 14 after opt-in',subject:'I hear this objection constantly -- let me address it',preview:'"I\'m not flexible enough to start a fitness program."',body:'Hi first_name,\n\nThe most common thing I hear before golfers start:\n\n"I\'m not flexible / fit / young enough to start something like this."\n\nThe reason to start is exactly because you\'re not flexible or fit or mobile enough yet.\n\nThe program assumes nothing. Week 1 has no advanced movements. No gym. The modifications guide covers every common limitation.\n\nReal results:\n- A 61-year-old with two knee replacements completed all 8 weeks. Added 14 yards.\n- A 52-year-old with chronic back pain discovered it was a hip problem. Pain resolved by Week 5.\n- A 44-year-old who hates working out completed it in hotel rooms while traveling. Gained 22 yards.\n\nGet Swing Fit: [GUMROAD LINK] -- $37\n\nP.S. If you have a specific concern, just reply. I\'ll tell you exactly how to modify it.\n\n-- Coach Johnny\nSwing Fit'},
+{num:5,timing:'Day 21 after opt-in',subject:'Last note from me (for a while)',preview:"This is the last pitch. After this, it's just value.",body:'Hi first_name,\n\nThis is my last email pitching the Swing Fit program for a while. After this, just golf fitness tips and useful content.\n\nFinal case:\n\nWhat you get: Complete 8-week system. 25+ exercises. Home-based. Nutrition guide. Pre-round warm-up. Modification guide. Lifetime access.\nWhat it costs: $37. One time.\nWhat it delivers: More distance. Less fatigue. No back pain. Athletic confidence on the course.\n\nGet it here: [GUMROAD LINK]\n\nIf it\'s not right for you now -- no problem. I\'ll keep sending useful content.\n\nBut if you\'ve been thinking about it... golf season doesn\'t wait.\n\n-- Coach Johnny\nSwing Fit'},
+];
+function buildContent(){
+  const cc=document.getElementById('car-container');
+  if(cc)cc.innerHTML=carData.map(c=>'<div class="cc2"><div class="cch"><span class="ccid">'+c.id+(c.status?' -- <span style="color:var(--bg2)">'+c.status+'</span>':'')+'</span><span class="ccfmt">'+c.fmt+'</span></div><div class="cchook">'+c.hook+'</div><div class="cb" style="margin-top:10px;"><pre>'+c.cap+'</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>').join('');
+  const sc=document.getElementById('sin-container');
+  if(sc)sc.innerHTML=sinData.map(s=>'<div class="cc2"><div class="cch"><span class="ccid">'+s.id+'</span><span class="ccfmt">'+s.fmt+'</span></div><div class="cchook">'+s.hook+'</div><div class="cb" style="margin-top:10px;"><pre>'+s.body+'</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>').join('');
+  const rc=document.getElementById('rel-container');
+  if(rc)rc.innerHTML='<div class="ib note" style="margin-bottom:1rem;">Use these as your opening line on camera or as text overlay. Then demonstrate the exercise.</div>'+relData.map((h,i)=>'<div class="cc2"><div class="cch"><span class="ccid">RH'+String(i+1).padStart(2,'0')+'</span><span class="ccfmt">Reel/TikTok hook</span></div><div class="cchook">"'+h+'"</div><div class="cb" style="margin-top:10px;"><pre>'+h+'</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div>').join('');
+  const ec=document.getElementById('email-container');
+  if(ec)ec.innerHTML=emailData.map(e=>'<div class="ecard"><div class="ehead"><span class="enum">EMAIL '+e.num+' OF 5</span><span class="etiming">'+e.timing+'</span></div><div class="ebody"><div class="esubj">Subject: '+e.subject+'</div><div class="eprev">Preview: '+e.preview+'</div><div class="cb"><pre>'+e.body+'</pre><button class="cpbtn" onclick="cp(this)">Copy</button></div></div></div>').join('');
+}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+window.addEventListener('DOMContentLoaded',()=>{load();seedPosts();buildContent();restoreSteps();upd();});
+</script>
+</body>
+</html>
